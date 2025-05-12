@@ -1,0 +1,127 @@
+class Libro:
+    def __init__(self, titulo, autor, genero, copias_totales):
+        self.titulo = titulo
+        self.autor = autor
+        self.genero = genero
+        self.copias_totales = copias_totales
+        self.copias_disponibles = copias_totales
+
+class Biblioteca:
+    GENEROS_VALIDOS = ["Fiction", "Non-Fiction", "Science", "Biography", "Children"]
+    
+    def __init__(self):
+        self.libros = []
+
+    def agregar_libro(self):
+        titulo = input("Ingrese el título del libro: ")
+        autor = input("Ingrese el autor del libro: ")
+        while True:
+            genero = input("Ingrese el género del libro (Fiction, Non-Fiction, Science, Biography, Children): ")
+            if genero in self.GENEROS_VALIDOS:
+                break
+            else:
+                print("Género no válido. Por favor, ingrese uno de los géneros válidos.")
+        copias_totales = int(input("Ingrese la cantidad total de copias del libro: "))
+        libro = Libro(titulo, autor, genero, copias_totales)
+        self.libros.append(libro)
+        print(f"Libro '{titulo}' agregado exitosamente.")
+
+    def buscar_libro(self):
+        titulo = input("Ingrese el título del libro a buscar: ")
+        for libro in self.libros:
+            if libro.titulo.lower() == titulo.lower():
+                print(f"\nTítulo: {libro.titulo}\nAutor: {libro.autor}\nGénero: {libro.genero}\nCopias disponibles: {libro.copias_disponibles}")
+                return
+        print("Book not found.")
+
+    def registrar_prestamo(self):
+        titulo = input("Ingrese el título del libro a prestar: ")
+        for libro in self.libros:
+            if libro.titulo.lower() == titulo.lower():
+                if libro.copias_disponibles > 0:
+                    libro.copias_disponibles -= 1
+                    print(f"Libro '{libro.titulo}' prestado exitosamente.")
+                else:
+                    print("No hay copias disponibles para prestar.")
+                return
+        print("Book not found.")
+
+    def registrar_devolucion(self):
+        titulo = input("Ingrese el título del libro a devolver: ")
+        for libro in self.libros:
+            if libro.titulo.lower() == titulo.lower():
+                if libro.copias_disponibles < libro.copias_totales:
+                    libro.copias_disponibles += 1
+                    print(f"Libro '{libro.titulo}' devuelto exitosamente.")
+                else:
+                    print("Este libro no ha sido prestado.")
+                return
+        print("Book not found.")
+
+    def eliminar_libro(self):
+        titulo = input("Ingrese el título del libro a eliminar: ")
+        for libro in self.libros:
+            if libro.titulo.lower() == titulo.lower():
+                if libro.copias_disponibles == libro.copias_totales:
+                    self.libros.remove(libro)
+                    print(f"Libro '{libro.titulo}' eliminado exitosamente.")
+                else:
+                    print("No se puede eliminar el libro porque tiene copias prestadas.")
+                return
+        print("Book not found.")
+
+    def listar_libros_por_genero(self):
+        genero = input("Ingrese el género de libros a listar: ")
+        if genero not in self.GENEROS_VALIDOS:
+            print("Género no válido.")
+            return
+        print(f"\nLibros del género '{genero}':")
+        for libro in self.libros:
+            if libro.genero == genero:
+                print(f"- {libro.titulo} por {libro.autor} ({libro.copias_disponibles} copias disponibles)")
+
+    def mostrar_resumen_inventario(self):
+        total_libros = len(self.libros)
+        total_copias = sum(libro.copias_totales for libro in self.libros)
+        copias_disponibles = sum(libro.copias_disponibles for libro in self.libros)
+        print(f"\nResumen del inventario:")
+        print(f"Total de libros: {total_libros}")
+        print(f"Total de copias: {total_copias}")
+        print(f"Copias disponibles: {copias_disponibles}")
+
+def menu():
+    biblioteca = Biblioteca()
+    while True:
+        print("\n--- Menú de la Biblioteca ---")
+        print("1. Agregar libro")
+        print("2. Buscar libro por título")
+        print("3. Registrar préstamo")
+        print("4. Registrar devolución")
+        print("5. Eliminar libro")
+        print("6. Listar libros por género")
+        print("7. Mostrar resumen de inventario")
+        print("8. Salir")
+        opcion = input("Seleccione una opción: ")
+
+        if opcion == "1":
+            biblioteca.agregar_libro()
+        elif opcion == "2":
+            biblioteca.buscar_libro()
+        elif opcion == "3":
+            biblioteca.registrar_prestamo()
+        elif opcion == "4":
+            biblioteca.registrar_devolucion()
+        elif opcion == "5":
+            biblioteca.eliminar_libro()
+        elif opcion == "6":
+            biblioteca.listar_libros_por_genero()
+        elif opcion == "7":
+            biblioteca.mostrar_resumen_inventario()
+        elif opcion == "8":
+            print("Gracias por usar el sistema de biblioteca.")
+            break
+        else:
+            print("Opción no válida. Intente nuevamente.")
+
+if __name__ == "__main__":
+    menu()
